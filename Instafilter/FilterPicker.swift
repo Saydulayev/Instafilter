@@ -7,33 +7,49 @@
 
 import SwiftUI
 
+
+enum FilterType: String, CaseIterable {
+    case comicEffect = "Comic Effect"
+    case bloom = "Bloom"
+    case colorInvert = "Color Invert"
+    case sepiaTone = "Sepia Tone"
+    case crystallize = "Crystallize"
+    case edges = "Edges"
+    case pixellate = "Pixellate"
+    case gaussianBlur = "Gaussian Blur"
+    case sharpen = "Sharpen"
+    case vignette = "Vignette"
+
+    var filter: CIFilter {
+        switch self {
+        case .comicEffect: return CIFilter.comicEffect()
+        case .bloom: return CIFilter.bloom()
+        case .colorInvert: return CIFilter.colorInvert()
+        case .sepiaTone: return CIFilter.sepiaTone()
+        case .crystallize: return CIFilter.crystallize()
+        case .edges: return CIFilter.edges()
+        case .pixellate: return CIFilter.pixellate()
+        case .gaussianBlur: return CIFilter.gaussianBlur()
+        case .sharpen: return CIFilter.sharpenLuminance()
+        case .vignette: return CIFilter.vignette()
+        }
+    }
+}
+
 struct FilterPicker: View {
     @Binding var currentFilter: CIFilter
     let onFilterChange: (CIFilter) -> Void
 
     var body: some View {
-        Section(header: Text("Artistic")) {
-            Button("Comic Effect") { onFilterChange(CIFilter.comicEffect()) }
-            Button("Bloom") { onFilterChange(CIFilter.bloom()) }
-            Button("Color Invert") { onFilterChange(CIFilter.colorInvert()) }
-        }
-        Section(header: Text("Adjustments")) {
-            Button("Saturation") { onFilterChange(CIFilter.colorControls()) }
-            Button("Exposure Adjust") { onFilterChange(CIFilter.exposureAdjust()) }
-            Button("Hue Adjust") { onFilterChange(CIFilter.hueAdjust()) }
-            Button("Gamma Adjust") { onFilterChange(CIFilter.gammaAdjust()) }
-        }
-        Section(header: Text("Blur & Sharpen")) {
-            Button("Gaussian Blur") { onFilterChange(CIFilter.gaussianBlur()) }
-            Button("Sharpen") { onFilterChange(CIFilter.sharpenLuminance()) }
-        }
-        Section(header: Text("Classic")) {
-            Button("Crystallize") { onFilterChange(CIFilter.crystallize()) }
-            Button("Edges") { onFilterChange(CIFilter.edges()) }
-            Button("Pixellate") { onFilterChange(CIFilter.pixellate()) }
-            Button("Sepia Tone") { onFilterChange(CIFilter.sepiaTone()) }
-            Button("Unsharp Mask") { onFilterChange(CIFilter.unsharpMask()) }
-            Button("Vignette") { onFilterChange(CIFilter.vignette()) }
+        List {
+            Section(header: Text("Filters")) {
+                ForEach(FilterType.allCases, id: \.self) { filterType in
+                    Button(filterType.rawValue) {
+                        onFilterChange(filterType.filter)
+                    }
+                }
+            }
         }
     }
 }
+

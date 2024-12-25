@@ -20,6 +20,12 @@ struct FilterSlider: View {
             Slider(value: $value, in: range)
                 .onChange(of: value, onChange)
                 .disabled(!isEnabled)
+                .opacity(isEnabled ? 1 : 0.5)
         }
     }
+}
+
+
+#Preview {
+    MainView()
 }

@@ -11,6 +11,7 @@ import StoreKit
 import PhotosUI
 import SwiftUI
 
+
 struct MainView: View {
     @State private var processedImage: Image?
     @State private var filterIntensity = 0.5
@@ -64,16 +65,21 @@ struct MainView: View {
                     Spacer()
 
                     if let processedImage {
-                        ShareLink(item: processedImage, preview: SharePreview("Instafilter image", image: processedImage))
+                        ShareLink(item: processedImage, preview: SharePreview("Instafilter image", image: processedImage)) {
+                            Label("Share", systemImage: "square.and.arrow.up")
+                        }
+                        .labelStyle(.iconOnly)
                     }
                 }
             }
             .padding([.horizontal, .bottom])
             .navigationTitle("Instafilter")
-            .confirmationDialog("Select a filter", isPresented: $showingFilters) {
+            .sheet(isPresented: $showingFilters) {
                 FilterPicker(currentFilter: $currentFilter) { newFilter in
                     setFilter(newFilter)
+                    showingFilters = false // Закрытие окна после выбора фильтра
                 }
+                .presentationDetents([.medium, .large])
             }
         }
     }
@@ -138,6 +144,7 @@ struct MainView: View {
         return CIImage(image: uiImage) ?? CIImage()
     }
 }
+
 
 #Preview {
     MainView()
